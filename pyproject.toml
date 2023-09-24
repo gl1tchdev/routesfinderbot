@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "routesfinderbot"
+version = "0.1.0"
+description = ""
+authors = ["holyshitt <izvekovp429@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.9"
+pytelegrambotapi = "^4.14.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
