@@ -3,6 +3,7 @@ from pathlib import Path
 
 HANDLERS_PATH = Path(__file__).resolve().parent.joinpath('handlers')
 TELEGRAM_TOKEN = os.environ.get('TG_TOKEN')
+RASP_YANDEX_TOKEN = os.environ.get('RASP_YA_TOKEN')
 
 # Uncomment if use celery
 # from telebot import TeleBot

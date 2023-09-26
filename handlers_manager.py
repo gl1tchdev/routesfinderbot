@@ -1,7 +1,4 @@
-import inspect
 import os
-import sys
-from pathlib import Path
 from importlib import import_module
 
 from telebot.async_telebot import AsyncTeleBot
@@ -9,20 +6,54 @@ from telebot.async_telebot import AsyncTeleBot
 from config import HANDLERS_PATH
 
 
-def get_modules(path: Path = HANDLERS_PATH) -> list:
-    modules_list = []
-    for module_name in os.listdir(HANDLERS_PATH):
-        if os.path.isdir(module_name) or module_name[:-3] == '__init__':
+def load_handler_modules(handler_type: str) -> dict:
+    modules_abs_path = HANDLERS_PATH.joinpath(handler_type)
+    modules_dict = {}
+    for module_name in os.listdir(modules_abs_path):
+        if module_name.startswith('__'):
             continue
-        module_name = 'handlers.' + module_name[:-3]
-        import_module(module_name)
-        modules_list.append(module_name)
-    return modules_list
+        module_name = f'handlers.{handler_type}.' + module_name[:-3]
+        module = import_module(module_name)
+        modules_dict.update({module_name: module})
+    return modules_dict
 
 
 def setup_handlers(bot: AsyncTeleBot) -> AsyncTeleBot:
-    modules = get_modules()
-    for module in modules:
-        functions = inspect.getmembers(sys.modules[module], inspect.isfunction)
-        bot.register_message_handler(functions[0][-1], func=functions[1][-1], pass_bot=True)
+    message_handlers = load_handler_modules('message')
+    for _, message_handler_module in message_handlers.items():
+        if not message_handler_module.enabled:
+            continue
+        bot.register_message_handler(pass_bot=True, callback=message_handler_module.callback, **message_handler_module.kwargs)
+
+    query_handlers = load_handler_modules('query')
+    for _, query_handler_module in query_handlers.items():
+        if not query_handler_module.enabled:
+            continue
+        bot.register_callback_query_handler(pass_bot=True, callback=query_handler_module.callback, **query_handler_module.kwargs)
     return bot
+
+
+
+'''
+    Params for handler module args:
+    
+    :param callback: function to be called
+    :type callback: :obj:`Awaitable`
+
+    :param content_types: Supported message content types. Must be a list. Defaults to ['text'].
+    :type content_types: :obj:`list` of :obj:`str`
+
+    :param commands: list of commands
+    :type commands: :obj:`list` of :obj:`str`
+
+    :param regexp:
+    :type regexp: :obj:`str`
+
+    :param func: Function executed as a filter
+    :type func: :obj:`function`
+
+    :param chat_types: List of chat types
+    :type chat_types: :obj:`list` of :obj:`str`
+
+    :param kwargs: Optional keyword arguments(custom filters)
+'''
