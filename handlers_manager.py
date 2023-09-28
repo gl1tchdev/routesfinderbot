@@ -9,12 +9,16 @@ from config import HANDLERS_PATH
 def load_handler_modules(handler_type: str) -> dict:
     modules_abs_path = HANDLERS_PATH.joinpath(handler_type)
     modules_dict = {}
-    for module_name in os.listdir(modules_abs_path):
-        if module_name.startswith('__'):
-            continue
-        module_name = f'handlers.{handler_type}.' + module_name[:-3]
-        module = import_module(module_name)
-        modules_dict.update({module_name: module})
+    for dir_path, _dir_names, file_names in os.walk(modules_abs_path):
+        for module_name in file_names:
+            if module_name.startswith('__') or not module_name.endswith('.py'):
+                continue
+            relative_path = os.path.relpath(dir_path, modules_abs_path)
+            if not relative_path == '.':
+                relative_path = f'.{relative_path}.'
+            module_name = f'handlers.{handler_type}' + relative_path + module_name[:-3]
+            module = import_module(module_name)
+            modules_dict.update({module_name: module})
     return modules_dict
 
 
@@ -35,7 +39,7 @@ def setup_handlers(bot: AsyncTeleBot) -> AsyncTeleBot:
 
 
 '''
-    Params for handler module args:
+    Params for message handler kwargs:
     
     :param callback: function to be called
     :type callback: :obj:`Awaitable`
@@ -54,6 +58,13 @@ def setup_handlers(bot: AsyncTeleBot) -> AsyncTeleBot:
 
     :param chat_types: List of chat types
     :type chat_types: :obj:`list` of :obj:`str`
+
+    For query handler:
+    
+    :param kwargs: Optional keyword arguments(custom filters)
+    
+    :param func: Function executed as a filter
+    :type func: :obj:`function`
 
     :param kwargs: Optional keyword arguments(custom filters)
 '''
