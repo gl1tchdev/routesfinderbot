@@ -2,6 +2,7 @@ import os
 from pathlib import Path
 
 HANDLERS_PATH = Path(__file__).resolve().parent.joinpath('handlers')
+DB_PATH = Path(__file__).resolve().parent.joinpath('db').joinpath('db.sql')
 TELEGRAM_TOKEN = os.environ.get('TG_TOKEN')
 RASP_YANDEX_TOKEN = os.environ.get('RASP_YA_TOKEN')
 
