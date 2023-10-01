@@ -23,6 +23,8 @@ class SearchSession(Base):
     __tablename__ = 'search_sessions'
     id: Mapped[int] = mapped_column(primary_key=True, index=True)
     stations: Mapped[List['StationChoice']] = relationship()
+    user_id: Mapped[int] = mapped_column()
+    active: Mapped[bool] = mapped_column(default=True)
 
 
 class StationChoice(Base):

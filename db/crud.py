@@ -7,13 +7,12 @@ from typing import Optional
 session_db: Session = Session(bind=engine)
 
 
-def create_station(short_name: str, full_name: str, code: str) -> Optional[Station]:
+def create_station(short_name: str, full_name: str, code: str) -> Station:
     query = select(Station).where(Station.code == code)
-    if session_db.execute(query).one_or_none():
-        return
     station_db: Station = Station(short_name=short_name, full_name=full_name, code=code)
-    session_db.add(station_db)
-    session_db.commit()
+    if not session_db.execute(query).one_or_none():
+        session_db.add(station_db)
+        session_db.commit()
     return station_db
 
 
@@ -22,11 +21,16 @@ def get_station_by_code(code: str) -> Optional[Station]:
     return session_db.scalar(query)
 
 
-def create_search_session() -> SearchSession:
-    search_session_db = SearchSession()
+def create_search_session(user_id: int) -> SearchSession:
+    search_session_db = SearchSession(user_id=user_id)
     session_db.add(search_session_db)
     session_db.commit()
     return search_session_db
+
+
+def get_session_by_user(user_id: int) -> Optional[SearchSession]:
+    query = select(SearchSession).where(SearchSession.user_id == user_id)
+    return session_db.scalar(query)
 
 
 def register_station_choice(station: Station, session: SearchSession, station_type: StationType) -> StationChoice:
