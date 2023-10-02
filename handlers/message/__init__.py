@@ -8,3 +8,10 @@ def prev(module):
         return message.reply_to_message.text == module.message_text
 
     return trigger
+
+
+def hidden():
+    def trigger(message: telebot.types.Message):
+        return False
+
+    return trigger

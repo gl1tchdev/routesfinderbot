@@ -2,6 +2,7 @@ import telebot.types
 from telebot.async_telebot import AsyncTeleBot
 from templates.message import END_STATION
 from telebot.types import ForceReply
+from ...message import hidden
 
 enabled = True
 
@@ -14,5 +15,5 @@ async def callback(message: telebot.types.Message, bot: AsyncTeleBot):
 
 
 kwargs = {
-    'commands': ['end_station']
+    'func': hidden()
 }
