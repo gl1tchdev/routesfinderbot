@@ -12,7 +12,7 @@ async def callback(message: telebot.types.Message, bot: AsyncTeleBot):
         'Добавить промежуточную станцию': {'callback_data': f'{FINAL_CHOICE}repeat'},
         'Закончить выбор': {'callback_data': f'{FINAL_CHOICE}finish'}
     }
-    await bot.send_message(message.chat.id, '...', reply_markup=quick_markup(markup_dict, row_width=1))
+    await bot.send_message(message.chat.id, 'Есть ли промежуточные станции?', reply_markup=quick_markup(markup_dict, row_width=1))
 
 
 kwargs = {

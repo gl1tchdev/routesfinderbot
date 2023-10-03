@@ -6,9 +6,25 @@ from typing import List
 
 
 class StationType(Enum):
-    START = 'start'
-    NODE = 'node'
-    END = 'end'
+    START: str = 'start_station'
+    END: str = 'end_station'
+    NODE: str = 'node_station'
+
+    def next(self):
+        cls = self.__class__
+        members = list(cls)
+        index = members.index(self) + 1
+        if index >= len(members):
+            index = -1
+        return members[index]
+
+    def translate(self) -> str:
+        translations = {
+            'start_station': 'Стартовая станция',
+            'end_station': 'Конечная станция',
+            'node_station': 'Промежуточная станция'
+        }
+        return translations[self.value]
 
 
 class Station(Base):
@@ -25,6 +41,7 @@ class SearchSession(Base):
     stations: Mapped[List['StationChoice']] = relationship()
     user_id: Mapped[int] = mapped_column()
     active: Mapped[bool] = mapped_column(default=True)
+    prompt_finished: Mapped[bool] = mapped_column(default=False)
 
 
 class StationChoice(Base):
@@ -35,3 +52,4 @@ class StationChoice(Base):
     station: Mapped['Station'] = relationship(Station)
     session_id: Mapped[int] = mapped_column(ForeignKey('search_sessions.id'))
     search_session: Mapped['SearchSession'] = relationship(SearchSession, back_populates='stations')
+    destination_time: Mapped[int] = mapped_column(default=0)

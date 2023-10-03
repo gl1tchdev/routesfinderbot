@@ -29,8 +29,13 @@ def create_search_session(user_id: int) -> SearchSession:
 
 
 def get_session_by_user(user_id: int) -> Optional[SearchSession]:
-    query = select(SearchSession).where(SearchSession.user_id == user_id)
+    query = select(SearchSession).where(SearchSession.user_id == user_id).order_by(SearchSession.id.desc())
     return session_db.scalar(query)
+
+
+def get_last_choice(user_id: int) -> Optional[StationChoice]:
+    user_session = get_session_by_user(user_id)
+    return user_session.stations[-1] if user_session else None
 
 
 def register_station_choice(station: Station, session: SearchSession, station_type: StationType) -> StationChoice:
