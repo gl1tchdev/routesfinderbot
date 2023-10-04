@@ -4,7 +4,6 @@ from db.crud import get_station_by_code, register_station_choice, get_session_by
 from db.models import Station, StationType, SearchSession, StationChoice
 from templates.locator import delimiter
 from typing import Optional
-from handlers.message import repeat
 from handlers.message.destination_time import ask
 
 enabled = True
@@ -27,10 +26,7 @@ async def callback(query: telebot.types.CallbackQuery, bot: AsyncTeleBot):
     await bot.answer_callback_query(query.id, f'{st_type.translate()} выбрана')
     await bot.edit_message_text(chat_id=query.message.chat.id, message_id=query.message.id,
                                 text=f'{st_type.translate()}: {station.short_name}')
-    if not st_type == StationType.END:
-        await ask.callback(query.message, bot)
-    else:
-        await repeat.callback(query.message, bot)
+    await ask.callback(query.message, bot)
 
 
 kwargs = {

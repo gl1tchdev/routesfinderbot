@@ -7,7 +7,6 @@ from db.models import StationType
 enabled = True
 
 
-
 async def callback(message: telebot.types.Message, bot: AsyncTeleBot):
     last_choice = get_last_choice(message.chat.id)
     st_type = last_choice.station_type.next() if last_choice else StationType.START
@@ -16,5 +15,5 @@ async def callback(message: telebot.types.Message, bot: AsyncTeleBot):
 
 
 kwargs = {
-    'commands': ['init']
+    'commands': ['prompt']
 }

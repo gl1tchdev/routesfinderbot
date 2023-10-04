@@ -1,5 +1,5 @@
-from typing import Dict
-from telebot.types import InlineKeyboardMarkup
+from typing import Dict, List
+from telebot.types import InlineKeyboardMarkup, KeyboardButton, ReplyKeyboardMarkup
 from telebot.util import quick_markup
 from templates.locator import delimiter
 
@@ -13,3 +13,11 @@ def station_choose(suggests: Dict[str, str], locator: str) -> InlineKeyboardMark
             }
         })
     return quick_markup(markup, row_width=1)
+
+
+def get_reply_markup(answers: List[str]) -> ReplyKeyboardMarkup:
+    markup = ReplyKeyboardMarkup()
+    for answer in answers:
+        button = KeyboardButton(answer)
+        markup.add(button)
+    return markup

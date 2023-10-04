@@ -1,6 +1,4 @@
-from db.models import StationType
-
 delimiter = ':'
 
 
-FINAL_CHOICE = 'final_choice' + delimiter
+FINISH_PROMPT_STATION = 'finish_prompt' + delimiter

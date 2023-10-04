@@ -10,8 +10,6 @@ def prev(module):
     return trigger
 
 
-def hidden():
-    def trigger(message: telebot.types.Message):
-        return False
+def hidden(message: telebot.types.Message):
+    return False
 
-    return trigger

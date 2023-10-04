@@ -21,7 +21,7 @@ async def callback(message: telebot.types.Message, bot: AsyncTeleBot):
     last_choice.destination_time = minutes
     session_db.commit()
     await bot.send_message(message.chat.id, 'Время установлено')
-    if last_choice.station_type == StationType.NODE:
+    if last_choice.station_type == StationType.NODE or last_choice.station_type == StationType.END:
         await repeat.callback(message, bot)
     else:
         await prompt.callback(message, bot)

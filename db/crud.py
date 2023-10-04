@@ -1,3 +1,4 @@
+from datetime import datetime
 from sqlalchemy.orm import Session
 from sqlalchemy import select
 from db.engine import engine
@@ -29,7 +30,7 @@ def create_search_session(user_id: int) -> SearchSession:
 
 
 def get_session_by_user(user_id: int) -> Optional[SearchSession]:
-    query = select(SearchSession).where(SearchSession.user_id == user_id).order_by(SearchSession.id.desc())
+    query = select(SearchSession).where(SearchSession.user_id == user_id and not SearchSession.prompt_finished).order_by(SearchSession.id.desc())
     return session_db.scalar(query)
 
 
@@ -49,10 +50,7 @@ def register_station_choice(station: Station, session: SearchSession, station_ty
     return db_station
 
 
-'''
-def create_session() -> SearchSession:
-    db_session = SearchSession()
-    db.add(db_session)
-    db.commit()
-    return db_session
-'''
+def set_session_timestamp(user_id: int, timestamp: datetime):
+    user_session = get_session_by_user(user_id)
+    user_session.timestamp = timestamp
+    session_db.commit()

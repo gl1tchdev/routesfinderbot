@@ -1,3 +1,4 @@
+from datetime import datetime
 from db.engine import Base
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import relationship, Mapped, mapped_column
@@ -42,6 +43,7 @@ class SearchSession(Base):
     user_id: Mapped[int] = mapped_column()
     active: Mapped[bool] = mapped_column(default=True)
     prompt_finished: Mapped[bool] = mapped_column(default=False)
+    timestamp: Mapped[datetime] = mapped_column(nullable=True, default=None)
 
 
 class StationChoice(Base):
